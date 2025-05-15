@@ -32,6 +32,10 @@ def employee_create(request):
     if request.method == 'POST':
         name = request.POST.get('name')
         email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        birth_date = request.POST.get('birth_date')
+        function = request.POST.get('function')
+        salary = request.POST.get('salary')
         address_id = request.POST.get('address_id')
         address = Address.objects.get(id=address_id)
         Employee.objects.create(name=name, email=email, address=address)
@@ -46,6 +50,10 @@ def employee_update(request, pk):
         employee.name = request.POST.get('name')
         employee.email = request.POST.get('email')
         address_id = request.POST.get('address_id')
+        employee.phone = request.POST.get('phone')
+        employee.birth_date = request.POST.get('birth_date')
+        employee.function = request.POST.get('function')
+        employee.salary = request.POST.get('salary')
         employee.address = Address.objects.get(id=address_id)
         employee.save()
         return HttpResponseRedirect(reverse('employee_list'))
@@ -60,3 +68,34 @@ def employee_delete(request, pk):
         return HttpResponseRedirect(reverse('employee_list'))
     return render(request, 'employee_delete.html', {'employee': employee})
 
+def address_list(request):
+    addresses = Address.objects.all()
+    return render(request, 'address_list.html', {'addresses': addresses})
+
+def address_create(request):
+    if request.method == 'POST':
+        address = request.POST.get('address')
+        number = request.POST.get('number')
+        city = request.POST.get('city')
+        state = request.POST.get('state')
+        Address.objects.create(address=address, number=number, city=city, state=state)
+        return HttpResponseRedirect(reverse('address_list'))
+    return render(request, 'address_create.html')
+
+def address_update(request, pk):
+    address = Address.objects.get(id=pk)
+    if request.method == 'POST':
+        address.address = request.POST.get('address')
+        address.number = request.POST.get('number')
+        address.city = request.POST.get('city')
+        address.state = request.POST.get('state')
+        address.save()
+        return HttpResponseRedirect(reverse('address_list'))
+    return render(request, 'address_update.html', {'address': address})
+
+def address_delete(request, pk):
+    address = Address.objects.get(id=pk)
+    if request.method == 'POST':
+        address.delete()
+        return HttpResponseRedirect(reverse('address_list'))
+    return render(request, 'address_delete.html', {'address': address})
